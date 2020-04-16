@@ -6,6 +6,7 @@ import com.changgou.goods.service.BrandService;
 import com.changgou.goods.pojo.Brand;
 import com.github.pagehelper.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;

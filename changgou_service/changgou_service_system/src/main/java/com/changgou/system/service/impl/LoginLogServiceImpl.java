@@ -1,8 +1,8 @@
 package com.changgou.system.service.impl;
 
 import com.changgou.system.dao.LoginLogMapper;
+import com.changgou.system.pojo.LoginLog;
 import com.changgou.system.service.LoginLogService;
-import com.changgou.pojo.LoginLog;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;

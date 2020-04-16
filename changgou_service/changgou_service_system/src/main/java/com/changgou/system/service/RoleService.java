@@ -1,6 +1,7 @@
 package com.changgou.system.service;
 
-import com.changgou.pojo.Role;
+
+import com.changgou.system.pojo.Role;
 import com.github.pagehelper.Page;
 
 import java.util.List;

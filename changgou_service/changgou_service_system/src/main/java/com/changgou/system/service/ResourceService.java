@@ -1,6 +1,6 @@
 package com.changgou.system.service;
 
-import com.changgou.pojo.Resource;
+import com.changgou.system.pojo.Resource;
 import com.github.pagehelper.Page;
 
 import java.util.List;

@@ -1,11 +1,12 @@
 package com.changgou.system.service.impl;
 
 import com.changgou.system.dao.AdminMapper;
+import com.changgou.system.pojo.Admin;
 import com.changgou.system.service.AdminService;
-import com.changgou.pojo.Admin;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
@@ -34,7 +35,7 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public Admin findById(Integer id){
-        return  adminMapper.selectByPrimaryKey(id);
+        return adminMapper.selectByPrimaryKey(id);
     }
 
 
@@ -44,6 +45,9 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public void add(Admin admin){
+        String gensalt = BCrypt.gensalt();//获取盐
+        String hashpw = BCrypt.hashpw(admin.getPassword(), gensalt);//对用户的密码进行加密
+        admin.setPassword(hashpw);
         adminMapper.insert(admin);
     }
 
@@ -102,6 +106,28 @@ public class AdminServiceImpl implements AdminService {
         PageHelper.startPage(page,size);
         Example example = createExample(searchMap);
         return (Page<Admin>)adminMapper.selectByExample(example);
+    }
+
+    /**
+     * 登录用户密码校验
+     * @param admin
+     * @return
+     */
+    @Override
+    public boolean login(Admin admin) {
+        //根据登录名，查询管理员信息
+        Admin admin1 = new Admin();
+        admin1.setLoginName(admin.getLoginName());
+        admin1.setStatus("1");
+        Admin adminResult = adminMapper.selectOne(admin1);
+        //对密码校验
+        if (adminResult == null){
+            return false;
+        }else {
+            //比较
+            boolean checkpw = BCrypt.checkpw(admin.getPassword(),adminResult.getPassword());
+            return checkpw;
+        }
     }
 
     /**
