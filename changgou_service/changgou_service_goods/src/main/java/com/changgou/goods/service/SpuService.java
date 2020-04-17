@@ -30,9 +30,9 @@ public interface SpuService {
 
     /***
      * 修改
-     * @param spu
+     * @param goods
      */
-    void update(Spu spu);
+    void update(Goods goods);
 
     /***
      * 删除
@@ -64,7 +64,41 @@ public interface SpuService {
      */
     Page<Spu> findPage(Map<String, Object> searchMap, int page, int size);
 
+    /**
+     * 根据id值查询SPU和SKU列表
+     * @param id
+     * @return
+     */
+    Goods findGoodsById(String id);
 
+    /**
+     * 审核商品,并自动上架
+     * @param id
+     */
+    void audit(String id);
 
+    /**
+     * 下架商品
+     * @param id
+     */
+    void pull(String id);
+
+    /**
+     * 上架商品
+     * @param id
+     */
+    void put(String id);
+
+    /**
+     * 还原被逻辑删除的商品
+     * @param id
+     */
+    void restore(String id);
+
+    /**
+     * 物理删除
+     * @param id
+     */
+    void realDel(String id);
 
 }

@@ -36,8 +36,8 @@ public class SpuController {
      */
     @GetMapping("/{id}")
     public Result findById(@PathVariable String id){
-        Spu spu = spuService.findById(id);
-        return new Result(true,StatusCode.OK,"查询成功",spu);
+        Goods goodsById = spuService.findGoodsById(id);
+        return new Result(true,StatusCode.OK,"查询成功",goodsById);
     }
 
 
@@ -55,14 +55,14 @@ public class SpuController {
 
     /***
      * 修改数据
-     * @param spu
+     * @param goods
      * @param id
      * @return
      */
     @PutMapping(value="/{id}")
-    public Result update(@RequestBody Spu spu,@PathVariable String id){
-        spu.setId(id);
-        spuService.update(spu);
+    public Result update(@RequestBody Goods goods,@PathVariable String id){
+        goods.getSpu().setId(id);
+        spuService.update(goods);
         return new Result(true,StatusCode.OK,"修改成功");
     }
 
@@ -104,5 +104,59 @@ public class SpuController {
         return new Result(true,StatusCode.OK,"查询成功",pageResult);
     }
 
+    /**
+     * 审核商品,并自动上架
+     * @param id
+     * @return
+     */
+    @PutMapping("/audit/{id}")
+    public Result audit(@PathVariable String id){
+        spuService.audit(id);
+        return new Result(true,StatusCode.OK,"商品审核成功");
+    }
+
+    /**
+     * 下架商品
+     * @param id
+     * @return
+     */
+    @PutMapping("/pull/{id}")
+    public Result pull(@PathVariable String id){
+        spuService.pull(id);
+        return new Result(true,StatusCode.OK,"商品下架成功");
+    }
+
+    /**
+     * 上架商品
+     * @param id
+     * @return
+     */
+    @PutMapping("/put/{id}")
+    public Result put(@PathVariable String id){
+        spuService.put(id);
+        return new Result(true,StatusCode.OK,"商品上架成功");
+    }
+
+    /**
+     * 被逻辑删除的商品，还原商品
+     * @param id
+     * @return
+     */
+    @PutMapping("/restore/{id}")
+    public Result restore(@PathVariable String id){
+        spuService.restore(id);
+        return new Result(true,StatusCode.OK,"商品还原成功");
+    }
+
+    /**
+     * 物理删除
+     * @param id
+     * @return
+     */
+    @DeleteMapping("/realDel/{id}")
+    public Result realDel(@PathVariable String id){
+        spuService.realDel(id);
+        return new Result(true,StatusCode.OK,"商品删除成功");
+    }
 
 }
