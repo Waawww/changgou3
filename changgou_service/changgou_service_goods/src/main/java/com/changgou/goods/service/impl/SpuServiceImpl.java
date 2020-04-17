@@ -1,14 +1,22 @@
 package com.changgou.goods.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.changgou.goods.dao.BrandMapper;
+import com.changgou.goods.dao.CategoryMapper;
+import com.changgou.goods.dao.SkuMapper;
 import com.changgou.goods.dao.SpuMapper;
+import com.changgou.goods.pojo.*;
 import com.changgou.goods.service.SpuService;
-import com.changgou.goods.pojo.Spu;
+import com.changgou.util.IdWorker;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +25,18 @@ public class SpuServiceImpl implements SpuService {
 
     @Autowired
     private SpuMapper spuMapper;
+
+    @Autowired
+    private IdWorker idWorker;
+
+    @Autowired
+    private CategoryMapper categoryMapper;
+
+    @Autowired
+    private BrandMapper brandMapper;
+
+    @Autowired
+    private SkuMapper skuMapper;
 
     /**
      * 查询全部列表
@@ -40,12 +60,81 @@ public class SpuServiceImpl implements SpuService {
 
     /**
      * 增加
-     * @param spu
+     * @param goods
      */
     @Override
-    public void add(Spu spu){
-        spuMapper.insert(spu);
+    @Transactional
+    public void add(Goods goods){
+    //1.添加sup
+        Spu spu = goods.getSpu();
+        //1.1设置分布式id
+        long spuId = idWorker.nextId();
+        spu.setId(String.valueOf(spuId));
+        //1.2设置删除状态  0：不删除
+        spu.setIsDelete("0");
+        //1.3设置上架状态 0:未上架  1：上架
+        spu.setIsMarketable("0");
+        //1.4设置审状态 0:未审核  1：已审核
+        spu.setStatus("0");
+        spuMapper.insertSelective(spu);//添加到数据库
+
+    //2.添加sku集合
+        this.saveSkuList(goods);
+
     }
+    //添加sku集合的方法
+    private void saveSkuList(Goods goods) {
+        Spu spu = goods.getSpu();
+
+        //查询分类对象
+        Category category = categoryMapper.selectByPrimaryKey(spu.getCategory3Id());
+
+        //查询品牌对象
+        Brand brand = brandMapper.selectByPrimaryKey(spu.getBrandId());
+
+        //获取sku集合
+        List<Sku> skuList = goods.getSkuList();
+        if (skuList != null) {
+            //遍历集合，循环填充数据，并添加到数据库
+            for (Sku sku : skuList) {
+                //设置id
+                long skuId = idWorker.nextId();
+                sku.setId(String.valueOf(skuId));
+                //设置sku规格数据
+                if (StringUtils.isEmpty(sku.getSpec())){
+                    sku.setSpec("{}");
+                }
+                //设置sku名称（spu名称+规格）
+                //spu名称
+                String name = spu.getName();
+                //将规格json转为map,将map 中的value进行名称的拼接
+                Map<String,String> specMap = JSON.parseObject(sku.getSpec(), Map.class);
+                if (specMap!=null&&specMap.size()>0){
+                    for (String value:specMap.values()) {
+                        name+=" "+value;
+                    }
+                }
+                sku.setName(name);
+
+                //设置spuid
+                sku.setSpuId(spu.getId());
+                //设置创建与修改时间
+                sku.setCreateTime(new Date());
+                sku.setUpdateTime(new Date());
+                //设置商品分类id
+                sku.setCategoryId(category.getId());
+                //设置商品分类名称
+                sku.setCategoryName(category.getName());
+                //设置品牌名称
+                sku.setBrandName(brand.getName());
+                //将sku添加到数据库
+                skuMapper.insertSelective(sku);
+
+            }
+        }
+
+    }
+
 
 
     /**

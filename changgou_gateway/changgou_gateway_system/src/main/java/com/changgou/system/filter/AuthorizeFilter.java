@@ -33,14 +33,12 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
         HttpHeaders headers = request.getHeaders();
         //5.获取jwt令牌信息
         String jwtToken = headers.getFirst("token");
-
         //6.判断当前令牌是否存在,则向客户端发送错误提示信息
         if (StringUtils.isEmpty(jwtToken)){
             //则向客户端发送错误提示信息
             response.setStatusCode(HttpStatus.UNAUTHORIZED);
             return response.setComplete();
         }
-
         //6.1 如果令牌存在,解析jwt令牌,判断该令牌是否合法,如果令牌不合法,则向客户端返回错误提示信息
         try{
             //解析令牌
@@ -51,12 +49,9 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
             response.setStatusCode(HttpStatus.UNAUTHORIZED);
             return response.setComplete();
         }
-
         //6.2 如果令牌合法,则放行
         return chain.filter(exchange);
-
     }
-
     @Override
     public int getOrder() {
         return 0;
