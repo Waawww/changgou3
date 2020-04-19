@@ -7,6 +7,8 @@ import com.changgou.goods.pojo.Sku;
 import com.github.pagehelper.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 @RestController
@@ -103,5 +105,19 @@ public class SkuController {
         return new Result(true,StatusCode.OK,"查询成功",pageResult);
     }
 
+
+    @GetMapping("/spu/{id}")
+    public List<Sku> findSkuListBySpuId(@PathVariable String id){
+        Map<String, Object> searchMap = new HashMap<>();
+
+        if (!"all".equals(id)){//表示如果链接不是/spu/all的话，就是查单个spu，而不是全部
+            searchMap.put("spuId",id);
+        }
+        searchMap.put("status","1");
+
+        List<Sku> list = skuService.findList(searchMap);
+        return list;
+
+    }
 
 }
