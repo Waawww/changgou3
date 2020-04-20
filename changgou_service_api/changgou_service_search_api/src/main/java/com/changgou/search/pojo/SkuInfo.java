@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * 索引库的映射类,操作这个类就可以改变索引库的数据
+ * 索引库的映射实体类,操作这个类就可以改变索引库的数据
  */
 
 @Document(indexName = "skuinfo", type = "docs")

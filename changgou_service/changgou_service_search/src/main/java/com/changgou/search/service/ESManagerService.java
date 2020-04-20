@@ -8,4 +8,7 @@ public interface ESManagerService {
     void importAll();
     //根据spuId查询skuList，然后再导入索引库
     void importDataBySpuId(String spuId);
+
+    //根据spuid，删除es索引库中相关的sku数据
+    void delDataBySpuId(String spuId);
 }
