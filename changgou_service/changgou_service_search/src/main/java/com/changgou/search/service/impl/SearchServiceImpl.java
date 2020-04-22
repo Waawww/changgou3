@@ -14,6 +14,8 @@ import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
@@ -134,8 +136,16 @@ public class SearchServiceImpl implements SearchService {
                     //降序
                     nativeSearchQueryBuilder.withSort(SortBuilders.fieldSort(searchMap.get("sortField")).order(SortOrder.DESC));
                 }
-
             }
+
+
+            //设置高亮域以及高亮的样式
+            //高亮域  field
+            //高亮样式的前缀preTags  高亮样式的后缀postTags
+            HighlightBuilder.Field field = new HighlightBuilder.Field("name")
+                    .preTags("<span style='color:red'>")
+                    .postTags("</span>");
+            nativeSearchQueryBuilder.withHighlightFields(field);
 
 
             //开启查询
@@ -157,6 +167,13 @@ public class SearchServiceImpl implements SearchService {
                         for (SearchHit hit : hits) {
                             //searchHit对象转为skuinfo对象
                             SkuInfo skuInfo = JSON.parseObject(hit.getSourceAsString(), SkuInfo.class);
+
+                            Map<String, HighlightField> highlightFields = hit.getHighlightFields();
+                            if (highlightFields!=null && highlightFields.size()>0){
+                                //替换数据。把没有高亮的数据，替换为高亮的数据
+                                skuInfo.setName(highlightFields.get("name").getFragments()[0].toString());
+                            }
+
                             list.add((T) skuInfo);
                         }
 
