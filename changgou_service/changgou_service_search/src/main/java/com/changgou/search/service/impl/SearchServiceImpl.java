@@ -14,7 +14,11 @@ import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
+import org.elasticsearch.search.sort.SortBuilder;
+import org.elasticsearch.search.sort.SortBuilders;
+import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.SearchResultMapper;
@@ -106,8 +110,32 @@ public class SearchServiceImpl implements SearchService {
             //terms(skuSpec) 是进行分组查询后分组的字段列
             nativeSearchQueryBuilder.addAggregation(AggregationBuilders.terms(skuSpec).field("spec.keyword"));
 
+            //分页查询
+            String pageNum = searchMap.get("pageNum");//当前页
+            String pageSize = searchMap.get("pageSize");//每页显示多少条
+            if (StringUtils.isEmpty(pageNum)){
+                pageNum="1";
+            }
+            if (StringUtils.isEmpty(pageSize)){
+                pageSize="30";
+            }
+            //设置分页
+            //PageRequest.of（当前页(从0开始)，每页显示多少条）;
+            nativeSearchQueryBuilder.withPageable(PageRequest.of(Integer.parseInt(pageNum)-1,Integer.parseInt(pageSize)));
 
+            //按照相关字段进行排序查询
+            //1.当前域   ->searchMap.get("sortField")
+            // 2.当前的排序操作是 升序ASC 还是 降序DESC   ->searchMap.get("sortRule")
+            if (!StringUtils.isEmpty(searchMap.get("sortField")) && StringUtils.isNotEmpty(searchMap.get("sortRule"))){
+                if ("ASC".equals(searchMap.get("sortRule"))){
+                    //升序
+                    nativeSearchQueryBuilder.withSort(SortBuilders.fieldSort(searchMap.get("sortField")).order(SortOrder.ASC));
+                }else {
+                    //降序
+                    nativeSearchQueryBuilder.withSort(SortBuilders.fieldSort(searchMap.get("sortField")).order(SortOrder.DESC));
+                }
 
+            }
 
 
             //开启查询
@@ -130,7 +158,6 @@ public class SearchServiceImpl implements SearchService {
                             //searchHit对象转为skuinfo对象
                             SkuInfo skuInfo = JSON.parseObject(hit.getSourceAsString(), SkuInfo.class);
                             list.add((T) skuInfo);
-
                         }
 
                     }
@@ -158,6 +185,8 @@ public class SearchServiceImpl implements SearchService {
             List<String> specList = specTerms.getBuckets().stream().map(bucket -> bucket.getKeyAsString()).collect(Collectors.toList());
             resultMap.put("specList",specList);
 
+            //返回当前页
+            resultMap.put("pageNum",pageNum);
 
             return resultMap;
 
