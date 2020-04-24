@@ -108,6 +108,10 @@ public class AdminController {
         return new Result(true,StatusCode.OK,"查询成功",pageResult);
     }
 
+    /**
+    * 登录用户密码校验
+    *
+    */
     @PostMapping("/login")
     public Result login(@RequestBody Admin admin){
         //判断密码是否正确
