@@ -596,7 +596,7 @@
 						<li class="yui3-u-1-5" th:each="sku,skuStat:${result.rows}">
 							<div class="list-wrap">
 								<div class="p-img">
-									<a href="item.html"  target="_blank"><img th:src="${sku.image}" /></a>
+									<a th:href="'http://192.168.200.128:8081/'+${sku.spuId}+'.html'}"  target="_blank"><img th:src="${sku.image}" /></a>
 								</div>
 								<div class="price">
 									<strong>
@@ -605,7 +605,7 @@
 										</strong>
 								</div>
 								<div class="attr">
-									<a target="_blank" href="item.html"  th:title="${sku.spec}" th:utext="${sku.name}"></a>
+									<a target="_blank" th:href="'http://192.168.200.128:8081/'+${sku.spuId}+'.html'}"  th:title="${sku.spec}" th:utext="${sku.name}"></a>
 								</div>
 								<div class="commit">
 									<i class="command">已有<span>2000</span>人评价</i>
@@ -622,32 +622,24 @@
 					<div class="sui-pagination pagination-large">
 						<ul>
 							<li class="prev disabled">
-								<a href="#">«上一页</a>
+								<a th:href="@{${url}(pageNum=${page.upper})}">«上一页</a>
 							</li>
-							<li class="active">
-								<a href="#">1</a>
-							</li>
-							<li>
-								<a href="#">2</a>
-							</li>
-							<li>
-								<a href="#">3</a>
-							</li>
-							<li>
-								<a href="#">4</a>
-							</li>
-							<li>
-								<a href="#">5</a>
+                            <!--循环遍历，显示页码-->
+							<li th:each="i:${#numbers.sequence(page.lpage,page.rpage)}" th:class="${i}==${page.currentpage}?'active':''">
+								<!--拼接url-->
+                                <a th:href="@{${url}(pageNum=${i})}" th:text="${i}"></a>
 							</li>
 							<li class="dotted"><span>...</span></li>
 							<li class="next">
-								<a href="#">下一页»</a>
+								<a th:href="@{${url}(pageNum=${page.next})}">下一页»</a>
 							</li>
 						</ul>
-						<div><span>共10页&nbsp;</span><span>
-      到第
-      <input type="text" class="page-num">
-      页 <button class="page-confirm" onclick="alert(1)">确定</button></span></div>
+                        <div><span>共<i th:text="${page.last}"></i>页&nbsp;</span>
+                            <span>
+                                到第<input type="text" class="page-num">页
+                                <button class="page-confirm" onclick="alert(1)">确定</button>
+                            </span>
+                        </div>
 					</div>
 				</div>
 			</div>

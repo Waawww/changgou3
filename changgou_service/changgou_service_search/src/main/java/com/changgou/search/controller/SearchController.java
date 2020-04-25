@@ -1,5 +1,7 @@
 package com.changgou.search.controller;
 
+import com.changgou.entity.Page;
+import com.changgou.search.pojo.SkuInfo;
 import com.changgou.search.service.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -54,6 +56,17 @@ public class SearchController {
 
         model.addAttribute("result",resultMap);//携带数据，传到页面
         model.addAttribute("searchMap",searchMap);
+
+        //封装分页数据，并返回
+        //long total,int currentpage,int pagesize
+        Page<SkuInfo> page = new Page<SkuInfo>(
+                Long.parseLong(String.valueOf(resultMap.get("total"))),
+                Integer.parseInt(String.valueOf(resultMap.get("pageNum"))),
+                Page.pageSize
+                );
+        model.addAttribute("page",page);
+
+
 
         //拼接url
         StringBuilder url = new StringBuilder("/search/list");

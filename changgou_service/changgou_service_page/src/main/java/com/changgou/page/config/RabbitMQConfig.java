@@ -1,4 +1,4 @@
-package com.itheima.canal.config;
+package com.changgou.page.config;
 
 import org.springframework.amqp.core.*;
 import org.springframework.beans.factory.annotation.Qualifier;

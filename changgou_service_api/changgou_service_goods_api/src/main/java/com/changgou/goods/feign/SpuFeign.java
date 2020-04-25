@@ -1,17 +1,16 @@
 package com.changgou.goods.feign;
 
-import com.changgou.goods.pojo.Sku;
+import com.changgou.entity.Result;
+import com.changgou.goods.pojo.Spu;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import java.util.List;
-
 @FeignClient(name = "goods")
-public interface SkuFeign {
+public interface SpuFeign {
 
-    //根据spuid查询sku列表
-    @GetMapping("/sku/spu/{id}")
-    List<Sku> findSkuListBySpuId(@PathVariable("id") String id);
+    //根据spuid查询spu的信息
+    @GetMapping("/spu/findSpuById/{id}")
+    public Result<Spu> findSpuById(@PathVariable("id") String id);
 
 }
