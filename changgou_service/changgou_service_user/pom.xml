@@ -26,6 +26,11 @@
             <artifactId>changgou_service_user_api</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+        <!--oauth2相关依赖-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-oauth2</artifactId>
+        </dependency>
     </dependencies>
 
 </project>
