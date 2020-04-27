@@ -11,7 +11,7 @@
 
     <artifactId>changgou_gateway_system</artifactId>
 
-    <dependencies>
+    <!--<dependencies>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-gateway</artifactId>
@@ -24,20 +24,20 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
-        <!--redis-->
+        &lt;!&ndash;redis&ndash;&gt;
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis-reactive</artifactId>
             <version>2.1.3.RELEASE</version>
         </dependency>
-        <!--鉴权-->
+        &lt;!&ndash;鉴权&ndash;&gt;
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
             <version>0.9.0</version>
         </dependency>
 
-        <!-- jaxb模块引用 - start -->
+        &lt;!&ndash; jaxb模块引用 - start &ndash;&gt;
         <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
@@ -57,7 +57,7 @@
             <artifactId>activation</artifactId>
             <version>1.1.1</version>
         </dependency>
-        <!-- jaxb模块引用 - end -->
-    </dependencies>
+        &lt;!&ndash; jaxb模块引用 - end &ndash;&gt;
+    </dependencies>-->
 
 </project>
