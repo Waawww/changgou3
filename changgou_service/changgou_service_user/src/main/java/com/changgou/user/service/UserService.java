@@ -63,7 +63,8 @@ public interface UserService {
      */
     Page<User> findPage(Map<String, Object> searchMap, int page, int size);
 
-
+    //增加积分
+    int addUserPoints(String username,Integer point);
 
 
 }

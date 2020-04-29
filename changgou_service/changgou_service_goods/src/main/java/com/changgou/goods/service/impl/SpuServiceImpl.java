@@ -4,11 +4,13 @@ import com.alibaba.fastjson.JSON;
 import com.changgou.goods.dao.*;
 import com.changgou.goods.pojo.*;
 import com.changgou.goods.service.SpuService;
+import com.changgou.order.pojo.OrderItem;
 import com.changgou.util.IdWorker;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
@@ -37,6 +39,7 @@ public class SpuServiceImpl implements SpuService {
 
     @Autowired
     private CategoryBrandMapper categoryBrandMapper;
+
 
     /**
      * 查询全部列表
@@ -382,6 +385,9 @@ public class SpuServiceImpl implements SpuService {
         //执行删除操作
         spuMapper.deleteByPrimaryKey(id);
     }
+
+
+
 
     /**
      * 构建查询对象

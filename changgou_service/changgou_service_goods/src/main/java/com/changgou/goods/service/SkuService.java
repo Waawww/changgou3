@@ -64,6 +64,6 @@ public interface SkuService {
     Page<Sku> findPage(Map<String, Object> searchMap, int page, int size);
 
 
-
+    void decrCount(String username);
 
 }

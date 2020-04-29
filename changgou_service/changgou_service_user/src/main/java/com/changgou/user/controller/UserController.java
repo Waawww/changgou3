@@ -2,6 +2,7 @@ package com.changgou.user.controller;
 import com.changgou.entity.PageResult;
 import com.changgou.entity.Result;
 import com.changgou.entity.StatusCode;
+import com.changgou.user.config.TokenDecode;
 import com.changgou.user.service.UserService;
 import com.changgou.user.pojo.User;
 import com.github.pagehelper.Page;
@@ -18,6 +19,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private TokenDecode tokenDecode;
 
     /**
      * 查询全部数据
@@ -110,6 +114,15 @@ public class UserController {
         Page<User> pageList = userService.findPage(searchMap, page, size);
         PageResult pageResult=new PageResult(pageList.getTotal(),pageList.getResult());
         return new Result(true,StatusCode.OK,"查询成功",pageResult);
+    }
+
+    //增加积分
+    @PostMapping("/points/add")
+    public Result addUserPoints(Integer points){
+        //根据jwt获取username
+        String username = tokenDecode.getUserInfo().get("username");
+        userService.addUserPoints(username, points);
+        return new Result(true,StatusCode.OK,"变更积分成功");
     }
 
 

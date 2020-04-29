@@ -39,9 +39,10 @@ public class AuthFilter implements GlobalFilter, Ordered {
         String jti = authService.getJtiFromCookie(request);
         if (StringUtils.isEmpty(jti)){
             //如果jti为空，拒绝访问
-            /*response.setStatusCode(HttpStatus.UNAUTHORIZED);
-            return response.setComplete();*/
-
+            /*
+            response.setStatusCode(HttpStatus.UNAUTHORIZED);
+            return response.setComplete();
+            */
             //跳转登录页面
             return this.toLoginPage(LOGIN_URL+"?FROM="+request.getURI().getPath(),exchange);
 
@@ -51,8 +52,10 @@ public class AuthFilter implements GlobalFilter, Ordered {
         String jwt = authService.getJwtFromRedis(jti);
         if (StringUtils.isEmpty(jwt)){
             //如果jwt为空，拒绝访问
-            /*response.setStatusCode(HttpStatus.UNAUTHORIZED);
-            return response.setComplete();*/
+            /*
+            response.setStatusCode(HttpStatus.UNAUTHORIZED);
+            return response.setComplete();
+            */
 
             //跳转登录页面
             return this.toLoginPage(LOGIN_URL+"?FROM="+request.getURI().getPath(),exchange);
