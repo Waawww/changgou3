@@ -1,9 +1,15 @@
 package com.changgou.order.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fescar.spring.annotation.GlobalTransactional;
 import com.changgou.goods.feign.SkuFeign;
+import com.changgou.order.config.RabbitMQConfig;
 import com.changgou.order.dao.OrderItemMapper;
 import com.changgou.order.dao.OrderMapper;
+import com.changgou.order.dao.TaskHisMapper;
+import com.changgou.order.dao.TaskMapper;
 import com.changgou.order.pojo.OrderItem;
+import com.changgou.order.pojo.Task;
 import com.changgou.order.service.CartService;
 import com.changgou.order.service.OrderService;
 import com.changgou.order.pojo.Order;
@@ -14,9 +20,11 @@ import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,6 +54,12 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private UserFeign userFeign;
 
+    @Autowired
+    private TaskMapper taskMapper;
+
+    @Autowired
+    private TaskHisMapper taskHisMapper;
+
 
     /**
      * 查询全部列表
@@ -72,6 +86,7 @@ public class OrderServiceImpl implements OrderService {
      * @param order
      */
     @Override
+    @GlobalTransactional(name = "order_add")
     public void add(Order order){
 
         //1.获取购物车的相关数据（redis）
@@ -112,7 +127,32 @@ public class OrderServiceImpl implements OrderService {
         skuFeign.decrCount(order.getUsername());
 
         //变更会员积分信息
-        userFeign.addUserPoints(10);
+        //userFeign.addUserPoints(10);
+        //以RabbitMQ来进行分布式事务控制，来实现会员的积分变更
+        //添加任务数据
+        System.out.println("向订单数据库中的任务表添加任务数据");
+
+        Task task = new Task();//任务表实体类
+        task.setCreateTime(new Date());
+        task.setUpdateTime(new Date());
+        task.setMqExchange(RabbitMQConfig.EX_BUYING_ADDPOINTUSER);
+        task.setMqRoutingkey(RabbitMQConfig.CG_BUYING_ADDPOINT_KEY);//添加积分的Routingkey
+
+        Map map = new HashMap<>();
+        map.put("username",order.getUsername());
+        map.put("orderId",orderId);
+        map.put("point",order.getPayMoney());//支付多少钱，增加多少积分
+
+        task.setRequestBody(JSON.toJSONString(map));
+
+        //将task保存到数据库
+        taskMapper.insertSelective(task);
+
+
+
+
+
+
 
 
         //5.删除购物车的数据(redis)
