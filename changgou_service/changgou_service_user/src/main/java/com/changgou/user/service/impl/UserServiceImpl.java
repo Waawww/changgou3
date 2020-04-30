@@ -104,7 +104,7 @@ public class UserServiceImpl implements UserService {
         return (Page<User>)userMapper.selectByExample(example);
     }
 
-    //增加积分
+    //增加积分,（无事务处理）
     @Override
     public int addUserPoints(String username,Integer point) {
         int count = userMapper.addUserPoints(username, point);
