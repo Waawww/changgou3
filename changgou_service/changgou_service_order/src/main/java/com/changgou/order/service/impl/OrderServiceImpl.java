@@ -87,7 +87,7 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     @GlobalTransactional(name = "order_add")
-    public void add(Order order){
+    public String add(Order order){
 
         //1.获取购物车的相关数据（redis）
         Map cartMap = cartService.list(order.getUsername());
@@ -153,7 +153,7 @@ public class OrderServiceImpl implements OrderService {
         //5.删除购物车的数据(redis)
         redisTemplate.delete(CART+order.getUsername());
 
-
+        return orderId;
     }
 
 
