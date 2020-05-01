@@ -150,11 +150,6 @@ public class OrderServiceImpl implements OrderService {
 
 
 
-
-
-
-
-
         //5.删除购物车的数据(redis)
         redisTemplate.delete(CART+order.getUsername());
 
