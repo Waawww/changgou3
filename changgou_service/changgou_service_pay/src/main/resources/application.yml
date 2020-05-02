@@ -13,3 +13,6 @@ eureka:
       defaultZone: http://127.0.0.1:6868/eureka
   instance:
     prefer-ip-address: true
+
+wxpay:
+  notify_url: http://hejingzhu.cross.echosite.cn/wxpay/notify #回调地址

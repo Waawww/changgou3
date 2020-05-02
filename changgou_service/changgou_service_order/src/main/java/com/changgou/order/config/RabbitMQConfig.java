@@ -27,6 +27,10 @@ public class RabbitMQConfig {
     //完成添加积分路由key
     public static final String CG_BUYING_FINISHADDPOINT_KEY = "finishaddpoint";
 
+    //查询支付订单队列
+    public static final String ORDER_PAY="order_pay";
+
+
     //声明交换机
     @Bean(EX_BUYING_ADDPOINTUSER)
     public Exchange EX_BUYING_ADDPOINTUSER(){
@@ -44,6 +48,11 @@ public class RabbitMQConfig {
     public Queue CG_BUYING_FINISHADDPOINT(){
         Queue queue = new Queue(CG_BUYING_FINISHADDPOINT);
         return queue;
+    }
+
+    @Bean
+    public Queue queue(){
+        return new Queue(ORDER_PAY);
     }
 
     //绑定队列与交换机

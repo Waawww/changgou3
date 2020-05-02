@@ -52,4 +52,11 @@ public class PayController {
         return "wxpay";
     }
 
+    //支付成功页面的跳转
+    @RequestMapping("/toPaySuccess")
+    public String toPaySuccess(Integer payMoney,Model model){
+        model.addAttribute("payMoney",payMoney);
+        return "paysuccess";
+    }
+
 }

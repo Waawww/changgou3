@@ -64,6 +64,6 @@ public interface OrderService {
     Page<Order> findPage(Map<String, Object> searchMap, int page, int size);
 
 
-
-
+    //修改订单的支付状态，并记录日志
+    void updatePayStatus(String orderId, String transactionId);
 }
