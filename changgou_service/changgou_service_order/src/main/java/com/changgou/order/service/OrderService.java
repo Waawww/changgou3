@@ -66,4 +66,16 @@ public interface OrderService {
 
     //修改订单的支付状态，并记录日志
     void updatePayStatus(String orderId, String transactionId);
+
+    //关闭订单
+    void closeOrder(String message);
+
+    //批量发货
+    void batchSend(List<Order> orders);
+
+    //手动确认收货
+    void confirmTask(String orderId,String operator);
+
+    //自动确认收货
+    void autoTack();
 }

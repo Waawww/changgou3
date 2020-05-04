@@ -8,8 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -21,6 +24,7 @@ public class PayController {
 
     @Autowired
     private WxPayFeign wxPayFeign;
+
 
     //跳转到微信支付二维码页面
     @GetMapping
@@ -58,5 +62,6 @@ public class PayController {
         model.addAttribute("payMoney",payMoney);
         return "paysuccess";
     }
+
 
 }

@@ -125,6 +125,13 @@ public class SkuServiceImpl implements SkuService {
         }
     }
 
+    //回滚库存
+    @Override
+    @Transactional
+    public void resumeStockNum(String skuId, Integer num) {
+        skuMapper.resumeStockNum(skuId,num);
+    }
+
     /**
      * 构建查询对象
      * @param searchMap

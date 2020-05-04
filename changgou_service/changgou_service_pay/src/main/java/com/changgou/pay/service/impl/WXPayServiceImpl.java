@@ -57,6 +57,7 @@ public class WXPayServiceImpl implements WXPayService {
         }
     }
 
+    //查询订单
     @Override
     public Map queryOrder(String orderId) {
 
@@ -68,6 +69,22 @@ public class WXPayServiceImpl implements WXPayService {
 
             return resultMap;
         } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    //在微信端关闭订单
+    @Override
+    public Map closeOrder(String orderId) {
+        try {
+            Map<String, String> map = new HashMap<>();
+            map.put("out_trade_no",orderId);
+
+            Map<String, String> resultMap = wxPay.closeOrder(map);
+            return resultMap;
+
+        }catch (Exception e){
             e.printStackTrace();
             return null;
         }

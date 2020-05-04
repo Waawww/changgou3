@@ -30,6 +30,9 @@ public class RabbitMQConfig {
     //查询支付订单队列
     public static final String ORDER_PAY="order_pay";
 
+    //定时每天发送到此队列
+    public static final String ORDER_TACK="order_tack";
+
 
     //声明交换机
     @Bean(EX_BUYING_ADDPOINTUSER)
@@ -48,6 +51,11 @@ public class RabbitMQConfig {
     public Queue CG_BUYING_FINISHADDPOINT(){
         Queue queue = new Queue(CG_BUYING_FINISHADDPOINT);
         return queue;
+    }
+
+    @Bean
+    public Queue ORDER_TACK(){
+        return new Queue(ORDER_TACK);
     }
 
     @Bean
