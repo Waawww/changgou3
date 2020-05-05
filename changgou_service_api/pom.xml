@@ -20,6 +20,7 @@
         <module>changgou_service_user_api</module>
         <module>changgou_service_search_api</module>
         <module>changgou_service_pay_api</module>
+        <module>changgou_service_seckill_api</module>
     </modules>
 
     <dependencies>
