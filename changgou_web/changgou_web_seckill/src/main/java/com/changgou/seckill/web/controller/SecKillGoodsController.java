@@ -1,9 +1,14 @@
 package com.changgou.seckill.web.controller;
 
+import com.changgou.entity.Result;
+import com.changgou.seckill.feign.SecKillGoodsFeign;
+import com.changgou.seckill.pojo.SeckillGoods;
 import com.changgou.util.DateUtil;
 import org.hibernate.validator.constraints.EAN;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.text.SimpleDateFormat;
@@ -14,6 +19,9 @@ import java.util.List;
 @Controller
 @RequestMapping("/wseckillgoods")
 public class SecKillGoodsController {
+
+    @Autowired
+    private SecKillGoodsFeign secKillGoodsFeign;
 
 
     //跳转秒杀首页
@@ -38,6 +46,14 @@ public class SecKillGoodsController {
         }
 
         return result;
+    }
+
+    @RequestMapping("/list")
+    @ResponseBody
+    public Result<List<SeckillGoods>> list(@RequestParam("time") String time){
+        Result<List<SeckillGoods>> list = secKillGoodsFeign.list(DateUtil.formatStr(time));
+        return list;
+
     }
 
 

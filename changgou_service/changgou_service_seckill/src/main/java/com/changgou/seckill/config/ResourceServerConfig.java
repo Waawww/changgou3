@@ -68,8 +68,10 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
      */
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        //所有请求必须认证通过
+        //所有请求必须认证通过。单独放行/seckillgoods/list/**
         http.authorizeRequests()
+                .antMatchers("/seckillgoods/list/**")
+                .permitAll()
                 .anyRequest().
                 authenticated();    //其他地址需要认证授权
     }

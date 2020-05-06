@@ -111,14 +111,17 @@
 		</div>
 		<!--秒杀时间-->
 		<div class="sectime">
-			<div class="item-time active" v-for="item in dateMenus">
+			<div class="item-time"
+				 v-for="(item,index) in dateMenus"
+				 :class="['item-time',index==ctime?'active':'']"
+				 @click="ctime=index;searchList(item)">
 				<div class="time-clock">{{item | dateFilter('HH:mm')}}</div>
 				<div class="time-state-on">
 					<span class="on-text" v-if="index==0">快抢中</span>
-					<span class="on-over" v-if="index==0">距离结束：01:02:03</span>
+					<span class="on-over" v-if="index==0">距离结束：{{timedown(alltimes[index])}}</span>
 
 					<span class="on-text" v-if="index>0">即将开始</span>
-					<span class="on-over" v-if="index>0">距离开始：03:02:01</span>
+					<span class="on-over" v-if="index>0">距离开始：{{timedown(alltimes[index])}}</span>
 				</div>
 			</div>
 
@@ -148,7 +151,7 @@
 						<div>剩余
 							<b class='owned'>{{item.stockCount}}</b>件</div>
 					</div>
-					<a class='sui-btn btn-block btn-buy'  href='javascript:void(0)' >立即抢购</a>
+					<a class='sui-btn btn-block btn-buy'  href='javascript:void(0)' @click="add(item.id)">立即抢购</a>
 				</li>
 			</ul>
 		</div>
@@ -341,16 +344,71 @@
 					goodslist: [],
 					dateMenus:[],
 					ctime:0,     //当前时间菜单选中的下标,
-					alltimes:[]
+					alltimes:[]  //倒计时时间集合
 				}
 			},
 			methods:{
 			    loadMenus:function () {
 					axios.get("/api/wseckillgoods/timeMenus").then(function (response) {
 						app.dateMenus=response.data;
+                        //查询当前秒杀时间段下的秒杀商品列表
+                        this.searchList(app.dateMenus[0]);
+
+						//计算正确的倒计时时间差
+						for (var i=0;i<app.dateMenus.length;i++){
+						    if (i==0){
+						        var x = i+1;
+                                app.$set(app.alltimes,i,new Date(app.dateMenus[x]).getTime() - new Date().getTime());
+							}else {
+                                app.$set(app.alltimes,i,new Date(app.dateMenus[i]).getTime() - new Date().getTime());
+							}
+						};
+
+						//时间差的递减实现
+						let timers = window.setInterval(function () {
+							for (var i=0;i<app.alltimes.length;i++){
+							    //时间的递减
+								app.$set(app.alltimes,i,app.alltimes[i]-1000);
+								if (app.alltimes[i]<=0){
+								    //停止倒计时，并重新刷新秒杀时间段
+									window.clearInterval(timers);
+									app.loadMenus();
+								}
+							}
+                        },1000);
 
                     })
+                },
+                //将毫秒转换成时分秒
+                timedown:function(num) {
+                    var oneSecond = 1000;
+                    var oneMinute=oneSecond*60;
+                    var oneHour=oneMinute*60
+                    //小时
+                    var hours =Math.floor(num/oneHour);
+                    //分钟
+                    var minutes=Math.floor((num%oneHour)/oneMinute);
+                    //秒
+                    var seconds=Math.floor((num%oneMinute)/oneSecond);
+                    //拼接时间格式
+                    var str = hours+':'+minutes+':'+seconds;
+                    return str;
+                },
+				//查询商品集合
+				searchList:function (time) {
+					axios.get("/api/wseckillgoods/list?time="+time).then(function (response) {
+                        app.goodslist = response.data.data;
+                    });
 
+                },
+				add:function (id) {
+					axios.get("/api/wseckillorder/add?time="+moment(app.dateMenus[0].format("YYYYMMDDHH"))+"&id="+id).then(function (res) {
+						if (res.data.flag){
+						    app.msg="抢单成功，即将进入支付";
+						}else{
+						    app.msg="抢单失败";
+						}
+                    });
                 }
 
 			},
