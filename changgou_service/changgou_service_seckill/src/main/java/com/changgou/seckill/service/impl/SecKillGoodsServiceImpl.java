@@ -14,7 +14,7 @@ public class SecKillGoodsServiceImpl implements SecKillGoodsService {
     @Autowired
     private RedisTemplate redisTemplate;
 
-    public static final String SECKILL_GOODS_KEY = "seckill_goods";
+    public static final String SECKILL_GOODS_KEY = "seckill_goods_";
 
     //根据秒杀时间段，查询秒杀商品信息
     @Override

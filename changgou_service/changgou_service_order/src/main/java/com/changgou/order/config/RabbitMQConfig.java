@@ -35,6 +35,7 @@ public class RabbitMQConfig {
 
 
     //声明交换机
+    //durable开启持久化
     @Bean(EX_BUYING_ADDPOINTUSER)
     public Exchange EX_BUYING_ADDPOINTUSER(){
         return ExchangeBuilder.directExchange(EX_BUYING_ADDPOINTUSER).durable(true).build();
@@ -43,7 +44,7 @@ public class RabbitMQConfig {
     //声明队列
     @Bean(CG_BUYING_ADDPOINT)
     public Queue CG_BUYING_ADDPOINT(){
-        Queue queue = new Queue(CG_BUYING_ADDPOINT);
+        Queue queue = new Queue(CG_BUYING_ADDPOINT,true);
         return queue;
     }
 

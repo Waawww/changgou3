@@ -24,7 +24,9 @@ public class SeckillGoodsPushTask {
     @Autowired
     private RedisTemplate redisTemplate;
 
-    public static final String SECKILL_GOODS_KEY = "seckill_goods";
+    public static final String SECKILL_GOODS_KEY = "seckill_goods_";
+
+    public static final String SECKILL_GOODS_STOCK_COUNT_KEY="seckill_goods_stock_count_";
 
     @Scheduled(cron = "0/30 * * * * ?")//每隔30s执行一次
     public void loadSecKillGoodsToRedis(){
@@ -66,6 +68,10 @@ public class SeckillGoodsPushTask {
             //添加到缓存中
             for (SeckillGoods seckillGood : seckillGoods) {
                 redisTemplate.opsForHash().put(SECKILL_GOODS_KEY + redisExtName,seckillGood.getId(),seckillGood);
+
+                //加载秒杀商品的库存,把商品的库存存到redis中
+                redisTemplate.opsForValue().set(SECKILL_GOODS_STOCK_COUNT_KEY+seckillGood.getId(),seckillGood.getStockCount());
+
             }
 
         }
